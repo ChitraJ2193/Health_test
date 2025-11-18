@@ -1,0 +1,6 @@
+# ⚠️ DO NOT COMMIT THIS FILE!
+# This is a local example file for reference only.
+# Add the actual token as a GitHub Secret: _IOS_SONAR_TOKEN
+
+_IOS_SONAR_TOKEN=d0a8aa2ee18640b8892ecb6040f775566ffdd4df
+

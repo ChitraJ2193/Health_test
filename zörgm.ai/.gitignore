@@ -1,0 +1,51 @@
+# Xcode
+*.xcodeproj/*
+!*.xcodeproj/project.pbxproj
+!*.xcodeproj/xcshareddata/
+*.xcworkspace/*
+!*.xcworkspace/contents.xcworkspacedata
+!*.xcworkspace/xcshareddata/
+*.xcuserstate
+*.xcuserdatad
+
+# Build
+build/
+DerivedData/
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Swift Package Manager
+.swiftpm/
+.build/
+*.xcodeproj
+
+# CocoaPods
+Pods/
+*.podspec
+
+# Secrets and tokens (DO NOT COMMIT)
+secrets.properties
+.env
+*.token
+*_token.txt
+sonar-token.txt
+sonar-token.local
+*.local
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# SonarQube
+.scannerwork/
+.sonar/
+
