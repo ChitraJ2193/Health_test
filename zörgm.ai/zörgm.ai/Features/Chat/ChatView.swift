@@ -44,7 +44,7 @@ struct ChatView: View {
                         .blur(radius: 180)
                         .ignoresSafeArea()
                     
-                    VStack(spacing: 0) {
+            VStack(spacing: 0) {
                     if !viewModel.hasStartedConversation {
                         // Landing Page View
                         landingPageView
@@ -67,7 +67,7 @@ struct ChatView: View {
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
                                 .frame(width: 20, height: 20)
-                            Text("Zorgm")
+                            Text("Zörgm")
                                 .font(.system(size: 16, weight: .medium))
                                 .foregroundColor(.primary)
                         }
@@ -151,9 +151,9 @@ struct ChatView: View {
                         // Descriptive Text
                         VStack(spacing: 8) {
                             Text("Education only. General health guidance with citations. Not medical advice.")
-                                .font(.custom("Space Grotesk", size: 12))
+                                .font(.custom("Inter", size: 14))
                                 .fontWeight(.regular)
-                                .lineSpacing(6) // line-height: 18px - font-size: 12px = 6px spacing
+                                .lineSpacing(10) // line-height: 24px - font-size: 14px = 10px spacing
                                 .foregroundColor(.secondary)
                                 .multilineTextAlignment(.center)
                             
@@ -193,37 +193,37 @@ struct ChatView: View {
     // MARK: - Chat Messages View
     
     private var chatMessagesView: some View {
-        ScrollViewReader { proxy in
-            ScrollView {
-                LazyVStack(spacing: 16) {
-                    ForEach(viewModel.messages) { message in
-                        MessageBubble(message: message)
-                            .id(message.id)
-                    }
-                    
-                    if viewModel.isLoading {
-                        HStack {
-                            ProgressView()
-                                .padding(.horizontal, 16)
-                                .padding(.vertical, 12)
-                            Text("Thinking...")
+                ScrollViewReader { proxy in
+                    ScrollView {
+                        LazyVStack(spacing: 16) {
+                            ForEach(viewModel.messages) { message in
+                                MessageBubble(message: message)
+                                    .id(message.id)
+                            }
+                            
+                            if viewModel.isLoading {
+                                HStack {
+                                    ProgressView()
+                                        .padding(.horizontal, 16)
+                                        .padding(.vertical, 12)
+                                    Text("Thinking...")
                                 .font(.system(size: 13))
-                                .foregroundColor(.secondary)
+                                        .foregroundColor(.secondary)
+                                }
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .padding(.leading)
+                            }
                         }
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(.leading)
+                        .padding()
+                    }
+                    .onChange(of: viewModel.messages.count) { _ in
+                        if let lastMessage = viewModel.messages.last {
+                            withAnimation {
+                                proxy.scrollTo(lastMessage.id, anchor: .bottom)
+                            }
+                        }
                     }
                 }
-                .padding()
-            }
-            .onChange(of: viewModel.messages.count) { _ in
-                if let lastMessage = viewModel.messages.last {
-                    withAnimation {
-                        proxy.scrollTo(lastMessage.id, anchor: .bottom)
-                    }
-                }
-            }
-        }
         .background(Color.white)
     }
     
@@ -232,55 +232,53 @@ struct ChatView: View {
     private var inputArea: some View {
         Group {
             if viewModel.hasStartedConversation {
-                VStack(spacing: 0) {
-                    // Disclaimer box
-                    HStack {
-                        Spacer()
-                        Text("Education only. General health guidance with citations. Not medical advice.")
-                            .font(.custom("Space Grotesk", size: 12))
-                            .fontWeight(.regular)
-                            .foregroundColor(.purple)
-                            .multilineTextAlignment(.center)
-                            .padding(.horizontal, 16)
-                            .padding(.vertical, 8)
-                            .background(
-                                RoundedRectangle(cornerRadius: 12)
-                                    .fill(Color.purple.opacity(0.1))
-                            )
-                        Spacer()
-                    }
-                    .padding(.horizontal, 16)
-                    .padding(.bottom, 12)
-                    
-                    Divider()
-                    
-                    HStack(spacing: 12) {
+        VStack(spacing: 0) {
+            Divider()
+            
+            HStack(spacing: 12) {
                         TextField("Ask me anything...", text: $viewModel.inputText, axis: .vertical)
-                            .textFieldStyle(.plain)
+                    .textFieldStyle(.plain)
                             .font(.system(size: 14))
                             .padding(.horizontal, 14)
                             .padding(.vertical, 10)
                             .background(Color(.systemGray6))
-                            .cornerRadius(20)
-                            .focused($isInputFocused)
-                            .lineLimit(1...4)
-                            .onSubmit {
-                                if !viewModel.inputText.isEmpty {
-                                    viewModel.sendMessage()
-                                }
-                            }
-                            .submitLabel(.send)
-                        
-                        Button(action: {
+                    .cornerRadius(20)
+                    .focused($isInputFocused)
+                    .lineLimit(1...4)
+                    .onSubmit {
+                        if !viewModel.inputText.isEmpty {
+                            viewModel.sendMessage()
+                        }
+                    }
+                    .submitLabel(.send)
+                
+                Button(action: {
                             // Microphone action (placeholder)
-                            isInputFocused = false
-                        }) {
+                    isInputFocused = false
+                }) {
                             Image(systemName: "mic.fill")
                                 .font(.system(size: 18))
                                 .foregroundColor(.gray)
                         }
                     }
                     .padding()
+                    .background(Color.white)
+                    
+                    // Disclaimer box below text field
+                    HStack {
+                        Spacer()
+                        Text("Education only. General health guidance with citations. Not medical advice.")
+                            .font(.custom("Space Grotesk", size: 12))
+                            .fontWeight(.regular)
+                            .lineSpacing(6) // line-height: 18px - font-size: 12px = 6px spacing
+                            .foregroundColor(Color(red: 153/255, green: 153/255, blue: 153/255)) // #999999
+                            .multilineTextAlignment(.center)
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 8)
+                        Spacer()
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.bottom, 12)
                     .background(Color.white)
                 }
             }
@@ -315,6 +313,7 @@ struct MessageBubble: View {
                 
                 Text(message.content.replacingOccurrences(of: "**", with: ""))
                     .font(.system(size: 14))
+                    .lineSpacing(-2) // Reduce spacing between paragraphs
                     .foregroundColor(message.isUser ? .primary : .primary)
                     .padding(.horizontal, 14)
                     .padding(.vertical, 10)

@@ -1,6 +1,6 @@
 //
 //  ContentView.swift
-//  zörgm.ai
+//  zörgm.ai
 //
 //  Created by Chitra Joshy on 17/11/25.
 //
@@ -8,8 +8,14 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State private var isAuthenticated: Bool = false
+    
     var body: some View {
-        ChatView()
+        if isAuthenticated {
+            ChatView()
+        } else {
+            LoginView(isAuthenticated: $isAuthenticated)
+        }
     }
 }
 

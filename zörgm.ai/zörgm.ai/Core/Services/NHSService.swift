@@ -439,8 +439,6 @@ class NHSService: NHSServiceProtocol {
             response += "\n\n" + additionalInfo
         }
         
-        response += "\n\n*This information is for educational purposes only and is not a substitute for professional medical advice, diagnosis, or treatment.*"
-        
         return response
     }
     
@@ -486,8 +484,6 @@ class NHSService: NHSServiceProtocol {
         if !additionalInfo.isEmpty {
             response += "\n\n" + additionalInfo
         }
-        
-        response += "\n\n*This information is for educational purposes only and is not a substitute for professional medical advice, diagnosis, or treatment.*"
         
         return response
     }
