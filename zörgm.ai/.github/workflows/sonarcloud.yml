@@ -31,12 +31,13 @@ jobs:
           wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.zip
           unzip sonar-scanner-cli-5.0.zip
 
-      # 2. Run Sonar Scanner (project is at root level)
+      # 2. Run Sonar Scanner inside the iOS folder
       - name: Run Sonar Scanner
         env:
           _IOS_SONAR_TOKEN: ${{ secrets._IOS_SONAR_TOKEN }}
         run: |
-          ./sonar-scanner-5.0/bin/sonar-scanner \
+          cd ios
+          ../sonar-scanner-5.0/bin/sonar-scanner \
           -Dsonar.login=${_IOS_SONAR_TOKEN} \
           -Dsonar.host.url=https://sonarcloud.io
 
