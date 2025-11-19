@@ -2,8 +2,9 @@ options:
   logging: CLOUD_LOGGING_ONLY
 
 steps:
-  # 1. Install Sonar Scanner
-  - name: openjdk:17
+  # 1. Install Sonar Scanner CLI
+  - name: eclipse-temurin:17-jdk
+    id: install-scanner
     entrypoint: bash
     args:
       - "-c"
@@ -11,35 +12,36 @@ steps:
         apt-get update && apt-get install -y wget unzip jq
         wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.zip
         unzip sonar-scanner-cli-5.0.zip
+        mv sonar-scanner-5.0 sonar-scanner
 
-  # 2. Run Sonar Scanner inside the iOS folder
-  - name: "openjdk:17"
+  # 2. Run Sonar Scanner inside the iOS directory
+  - name: eclipse-temurin:17-jdk
+    id: run-sonar-scan
     entrypoint: bash
     args:
       - "-c"
       - |
         cd ios
-        ../sonar-scanner-5.0/bin/sonar-scanner \
-        -Dsonar.login=${_IOS_SONAR_TOKEN} \
-        -Dsonar.host.url=https://sonarcloud.io
+        ../sonar-scanner/bin/sonar-scanner \
+          -Dsonar.login="${_IOS_SONAR_TOKEN}" \
+          -Dsonar.host.url="https://sonarcloud.io"
 
   # 3. Quality Gate Check
-  - name: "curlimages/curl"
-    id: "check-quality-gate"
+  - name: curlimages/curl
+    id: check-quality-gate
     entrypoint: bash
     args:
       - "-c"
       - |
-        STATUS=$(curl -u ${_IOS_SONAR_TOKEN}: \
-        "https://sonarcloud.io/api/qualitygates/project_status?projectKey=zorgm.ai-ios" \
-        | jq -r '.projectStatus.status')
+        STATUS=$(curl -u "${_IOS_SONAR_TOKEN}": \
+          "https://sonarcloud.io/api/qualitygates/project_status?projectKey=zorgm.ai-ios" \
+          | jq -r '.projectStatus.status')
 
-        echo "Quality Gate Status: $$STATUS"
+        echo "Quality Gate Status: $STATUS"
 
-        if [ "$$STATUS" != "OK" ]; then
+        if [ "$STATUS" != "OK" ]; then
           echo "❌ Quality Gate FAILED — merge blocked!"
           exit 1
         fi
 
         echo "✅ Quality Gate PASSED — clean Swift code!"
-
