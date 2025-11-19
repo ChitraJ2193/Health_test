@@ -30,7 +30,7 @@ steps:
     args:
       - "-c"
       - |
-        STATUS=$(curl -u $${_IOS_SONAR_TOKEN}: \
+        STATUS=$(curl -u ${_IOS_SONAR_TOKEN}: \
         "https://sonarcloud.io/api/qualitygates/project_status?projectKey=zorgm.ai-ios" \
         | jq -r '.projectStatus.status')
 
